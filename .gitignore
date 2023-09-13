@@ -1,0 +1,10 @@
+build/
+bin/
+.vscode/
+.gradle/
+.project
+.classpath
+**/*.class
+**/*.jar
+**/*.bak
+**/*~
