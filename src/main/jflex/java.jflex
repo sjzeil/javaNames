@@ -190,13 +190,13 @@ SingleCharacter = [^\r\n\'\\]
   "["                            { return symbol(); }
   "]"                            { return symbol(); }
   ";"                            { return symbol(); }
-  ","                            { return symbol(); }
+  ","                            { return symbol(Token.COMMA); }
   "."                            { return symbol(); }
 
   /* operators */
   "="                            { return symbol(); }
-  ">"                            { return symbol(); }
-  "<"                            { return symbol(); }
+  ">"                            { return symbol(Token.GREATER); }
+  "<"                            { return symbol(Token.LESS); }
   "!"                            { return symbol(); }
   "~"                            { return symbol(); }
   "?"                            { return symbol(); }

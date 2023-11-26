@@ -36,6 +36,19 @@ public class CollectIdentifiersTest {
         assertThat(ci, hasItems("A", "b", "c"));
     }
 
+    @Test
+    public void testCollectGenerics() throws IOException {
+        String inputStr = "class A { Map<int,A> b() {} \n public A c() {} }";
+        StringReader input = new StringReader(inputStr);
+
+        CollectIdentifiers ci = new CollectIdentifiers();
+        ci.collect(input);
+        assertThat(ci.contains("A"), is(true));
+        assertThat(ci.contains("a"), is(false));
+
+        assertThat(ci, hasItems("A", "b", "c"));
+    }
+
 
     @Test
     public void testCollectIdentifiersFromDirectoryTree() throws IOException {

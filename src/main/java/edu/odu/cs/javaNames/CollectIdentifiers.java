@@ -27,17 +27,83 @@ public class CollectIdentifiers implements Iterable<String> {
         return identifiers.iterator();
     }
 
+    /**
+     * Read tokens, watching them via a finite automaton to recognize
+     * declarations of variables, types, & constants.
+     * 
+     * Refer to identifierFSA.png
+     * 
+     * @param input input source
+     * @throws IOException
+     */
     public void collect(Reader input) throws IOException {
         Scanner scanner = new Scanner(input);
-        int lastToken = Token.OTHER;
+        int state = 0;
         Token t = scanner.yylex();
         while (t.kind != Token.EOF) {
-            if (t.kind == Token.IDENTIFIER &&
-                    (lastToken == Token.DECLARER
-                            || lastToken == Token.IDENTIFIER)) {
-                identifiers.add(t.lexeme);
+            switch (state) {
+                case 0:
+                    if (t.kind == Token.IDENTIFIER)
+                        state = 1;
+                    else if (t.kind == Token.DECLARER)
+                        state = 3;
+                    else
+                        state = 0;
+                    break;
+                case 1:
+                    if (t.kind == Token.IDENTIFIER) {
+                        state = 2;
+                        identifiers.add(t.lexeme);
+                        state = 0;
+                    } else if (t.kind == Token.DECLARER)
+                        state = 3;
+                    else if (t.kind == Token.LESS)
+                        state = 4;
+                    else
+                        state = 0;
+                    break;
+                case 3:
+                    if (t.kind == Token.IDENTIFIER) {
+                        state = 2;
+                        identifiers.add(t.lexeme);
+                        state = 0;
+                    } else if (t.kind == Token.DECLARER)
+                        state = 3;
+                    else
+                        state = 0;
+                    break;
+                case 4:
+                    if (t.kind == Token.IDENTIFIER)
+                        state = 6;
+                    else if (t.kind == Token.DECLARER)
+                        state = 6;
+                    else if (t.kind == Token.GREATER)
+                        state = 5;
+                    else
+                        state = 0;
+                    break;
+                case 5:
+                    if (t.kind == Token.IDENTIFIER) {
+                        state = 2;
+                        identifiers.add(t.lexeme);
+                        state = 0;
+                    }
+                    else if (t.kind == Token.DECLARER)
+                        state = 3;
+                    else
+                        state = 0;
+                    break;
+                case 6:
+                    if (t.kind == Token.COMMA)
+                        state = 4;
+                    else if (t.kind == Token.GREATER)
+                        state = 5;
+                    else
+                        state = 0;
+                    break;
+                default:
+                    state = 0;
             }
-            lastToken = t.kind;
             t = scanner.yylex();
         }
     }

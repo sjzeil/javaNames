@@ -11,11 +11,6 @@ import java.io.StringReader;
 
 public class JavaLexerTest {
 
-    public final static int IDENTIFIER = 0;
-    public final static int DECLARER = 1;
-    public final static int OTHER = 2;
-    public final static int EOF = 3;
-
   
   
   @Test
@@ -23,22 +18,24 @@ public class JavaLexerTest {
     String input = "class A { public int b() {int c; } \n}\n";
     StringReader in = new StringReader(input);
     Scanner scanner = new Scanner(in);
-    int[] expected = {DECLARER, IDENTIFIER, OTHER, OTHER, DECLARER, IDENTIFIER,
-      OTHER, OTHER, OTHER, DECLARER, IDENTIFIER, OTHER, OTHER, OTHER, EOF};
+    int[] expected = {Token.DECLARER, Token.IDENTIFIER, Token.OTHER, 
+      Token.OTHER, Token.DECLARER, Token.IDENTIFIER,
+      Token.OTHER, Token.OTHER, Token.OTHER, Token.DECLARER,
+      Token.IDENTIFIER, Token.OTHER, Token.OTHER, Token.OTHER, Token.EOF};
     String[] expectedIdentifiers = {"A", "b", "c"};
     Token t = scanner.yylex();
     int tokenNum = 0;
     int idNum = 0;
-    while (t.kind != EOF) {
+    while (t.kind != Token.EOF) {
       assertThat(t.kind, is(expected[tokenNum]));
       ++tokenNum;
-      if (t.kind == IDENTIFIER) {
+      if (t.kind == Token.IDENTIFIER) {
         assertThat(t.lexeme, is(expectedIdentifiers[idNum]));
         ++idNum;
       }
       t = scanner.yylex();
     }
-    assertThat(expected[tokenNum], is(EOF));
+    assertThat(expected[tokenNum], is(Token.EOF));
   }
 
 @Test
@@ -46,21 +43,21 @@ public class JavaLexerTest {
     String input = "\\ '\u00A5'";
     StringReader in = new StringReader(input);
     Scanner scanner = new Scanner(in);
-    int[] expected = {OTHER, OTHER, EOF};
+    int[] expected = {Token.OTHER, Token.OTHER, Token.EOF};
     String[] expectedIdentifiers = {};
     Token t = scanner.yylex();
     int tokenNum = 0;
     int idNum = 0;
-    while (t.kind != EOF) {
+    while (t.kind != Token.EOF) {
       assertThat(t.kind, is(expected[tokenNum]));
       ++tokenNum;
-      if (t.kind == IDENTIFIER) {
+      if (t.kind == Token.IDENTIFIER) {
         assertThat(t.lexeme, is(expectedIdentifiers[idNum]));
         ++idNum;
       }
       t = scanner.yylex();
     }
-    assertThat(expected[tokenNum], is(EOF));
+    assertThat(expected[tokenNum], is(Token.EOF));
   }
 
 
@@ -69,21 +66,22 @@ public class JavaLexerTest {
     String input = "\"A \" B \"/*\" C \"/*\"";
     StringReader in = new StringReader(input);
     Scanner scanner = new Scanner(in);
-    int[] expected = {OTHER, IDENTIFIER, OTHER, IDENTIFIER, OTHER, EOF};
+    int[] expected = {Token.OTHER, Token.IDENTIFIER, Token.OTHER, 
+      Token.IDENTIFIER, Token.OTHER, Token.EOF};
     String[] expectedIdentifiers = {"B", "C"};
     Token t = scanner.yylex();
     int tokenNum = 0;
     int idNum = 0;
-    while (t.kind != EOF) {
+    while (t.kind != Token.EOF) {
       assertThat(t.kind, is(expected[tokenNum]));
       ++tokenNum;
-      if (t.kind == IDENTIFIER) {
+      if (t.kind == Token.IDENTIFIER) {
         assertThat(t.lexeme, is(expectedIdentifiers[idNum]));
         ++idNum;
       }
       t = scanner.yylex();
     }
-    assertThat(expected[tokenNum], is(EOF));
+    assertThat(expected[tokenNum], is(Token.EOF));
   }
 
 @Test
@@ -91,21 +89,21 @@ public class JavaLexerTest {
     String input = "/* A \"B\" \n\n */ C ";
     StringReader in = new StringReader(input);
     Scanner scanner = new Scanner(in);
-    int[] expected = {IDENTIFIER, EOF};
+    int[] expected = {Token.IDENTIFIER, Token.EOF};
     String[] expectedIdentifiers = {"C"};
     Token t = scanner.yylex();
     int tokenNum = 0;
     int idNum = 0;
-    while (t.kind != EOF) {
+    while (t.kind != Token.EOF) {
       assertThat(t.kind, is(expected[tokenNum]));
       ++tokenNum;
-      if (t.kind == IDENTIFIER) {
+      if (t.kind == Token.IDENTIFIER) {
         assertThat(t.lexeme, is(expectedIdentifiers[idNum]));
         ++idNum;
       }
       t = scanner.yylex();
     }
-    assertThat(expected[tokenNum], is(EOF));
+    assertThat(expected[tokenNum], is(Token.EOF));
   }
 
 @Test
@@ -113,21 +111,21 @@ public class JavaLexerTest {
     String input = "// A \n B // C /* \n D // */";
     StringReader in = new StringReader(input);
     Scanner scanner = new Scanner(in);
-    int[] expected = {IDENTIFIER, IDENTIFIER, EOF};
+    int[] expected = {Token.IDENTIFIER, Token.IDENTIFIER, Token.EOF};
     String[] expectedIdentifiers = {"B", "D"};
     Token t = scanner.yylex();
     int tokenNum = 0;
     int idNum = 0;
-    while (t.kind != EOF) {
+    while (t.kind != Token.EOF) {
       assertThat(t.kind, is(expected[tokenNum]));
       ++tokenNum;
-      if (t.kind == IDENTIFIER) {
+      if (t.kind == Token.IDENTIFIER) {
         assertThat(t.lexeme, is(expectedIdentifiers[idNum]));
         ++idNum;
       }
       t = scanner.yylex();
     }
-    assertThat(expected[tokenNum], is(EOF));
+    assertThat(expected[tokenNum], is(Token.EOF));
   }
 
 
